@@ -28,19 +28,22 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         HttpStatus status;
+        String message;
+        UserSession userSession;
         if (userService.validateUser(user)){
             status = HttpStatus.CREATED;
-            UserSession userSession = userService.login(user);
-            map.put("status", status.value());
-            map.put("message", "Successfully logged in");
-            map.put("session", userSession);
+            userSession = userService.login(user);
+            message = "Successfully logged in";
         }
         else {
             status = HttpStatus.BAD_REQUEST;
-            map.put("status", status.value());
-            map.put("message", "Username and password don't match");
-            map.put("session", "");
+            userSession = null;
+            message = "Username and password don't match";
+
         }
+        map.put("status", status.value());
+        map.put("session", userSession);
+        map.put("message", message);
         return new ResponseEntity<Object>(map,status);
 
     }
