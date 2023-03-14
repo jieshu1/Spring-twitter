@@ -6,7 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tweets", indexes = @Index(name = "user_created_at",
@@ -29,8 +31,12 @@ public class Tweet {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+    //@JsonIgnore
     private User user;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    List<Newsfeed> newsfeedList;
 
     public Integer getId(){
         return id;
@@ -52,6 +58,25 @@ public class Tweet {
 
     public Date getCreatedAt(){
         return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setNewsfeedList(List<Newsfeed> newsfeedList) {
+        this.newsfeedList = newsfeedList;
+    }
+
+    public List<Newsfeed> getNewsfeedList() {
+        if (newsfeedList == null) {
+            newsfeedList = new ArrayList<>();
+        }
+        return newsfeedList;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override

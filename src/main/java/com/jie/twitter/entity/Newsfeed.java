@@ -21,7 +21,7 @@ public class Newsfeed {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+    //@JsonIgnore
     private User user;
 
     @ManyToOne
@@ -53,6 +53,15 @@ public class Newsfeed {
     public Date getCreatedAt(){
         return createdAt;
     }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 
     @Override
     public String toString() {
