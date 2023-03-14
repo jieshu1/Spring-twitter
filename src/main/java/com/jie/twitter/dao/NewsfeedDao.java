@@ -72,8 +72,6 @@ public class NewsfeedDao {
             theQuery.setParameter("user", user);
             newsfeedsList = theQuery.getResultList();
             if (newsfeedsList.size() > 0){
-                System.out.println("userID:" + user.getEmail() +
-                        ", has newsfeeds: before saving to database:" + user.getNewsfeedsList());
                 user.setNewsfeedsList(newsfeedsList);
                 System.out.println("userID:" + user.getEmail() +
                         ", has newsfeeds: after saving to database" + user.getNewsfeedsList());

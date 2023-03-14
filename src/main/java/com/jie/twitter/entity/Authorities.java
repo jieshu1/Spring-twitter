@@ -29,4 +29,6 @@ public class Authorities implements Serializable {
     public void setAuthorities(String authorities){
         this.authorities = authorities;
     }
+
 }
+

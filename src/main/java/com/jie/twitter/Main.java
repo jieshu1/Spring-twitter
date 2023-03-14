@@ -1,5 +1,6 @@
 package com.jie.twitter;
 
+import com.jie.twitter.config.ApplicationConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

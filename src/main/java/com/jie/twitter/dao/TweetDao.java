@@ -26,6 +26,7 @@ public class TweetDao {
             session.save(tweet);
             session.getTransaction().commit();
             result = true;
+            System.out.println(String.format("tweet created: %s", tweet.toString()));
         } catch (Exception ex) {
             ex.printStackTrace();
             session.getTransaction().rollback();

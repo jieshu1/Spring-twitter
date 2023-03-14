@@ -59,6 +59,18 @@ public class Friendship {
     public Date getUpdatedAt(){return updatedAt;
     }
 
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
