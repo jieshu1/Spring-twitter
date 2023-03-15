@@ -21,7 +21,11 @@ public class LoginController {
     private UserService userService;
 
     @RequestMapping(value = "/twitter/login", method = RequestMethod.POST)
-    public ResponseEntity<Object> logIn(@RequestBody User user){
+    public ResponseEntity<Object> logIn(@RequestBody Map<String, String> params){
+        User user = new User();
+        user.setEmail(params.get("email"));
+        user.setPassword(params.get("password"));
+        System.out.println(user.getEmail() + user.getPassword());
         if (user == null || user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad input");
         }

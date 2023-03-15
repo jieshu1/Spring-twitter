@@ -46,6 +46,10 @@ public class User implements Serializable {
     private List<Newsfeed> newsfeedsList;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> commentsList;
+
+    @JsonIgnore
     @Transient
     private List<User> followersList;
 
@@ -143,6 +147,17 @@ public class User implements Serializable {
             followingsList = new ArrayList<>();
         }
         return followingsList;
+    }
+
+    public List<Comment> getCommentsList() {
+        if (commentsList == null) {
+            commentsList = new ArrayList<>();
+        }
+        return commentsList;
+    }
+
+    public void setCommentsList(List<Comment> commentsList) {
+        this.commentsList = commentsList;
     }
 
     public void setFollowingsList(List<User> followingsList){this.followingsList = followingsList;}

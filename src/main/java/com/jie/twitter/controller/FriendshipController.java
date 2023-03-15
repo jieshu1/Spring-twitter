@@ -78,7 +78,7 @@ public class FriendshipController {
         String message;
         if (friendshipService.getFollowers(user)){
             status = HttpStatus.OK;
-            message = "successfully followed";
+            message = "successful";
         }
         else {
             status = HttpStatus.BAD_REQUEST;
@@ -103,7 +103,7 @@ public class FriendshipController {
         String message;
         if (friendshipService.getFollowings(user)){
             status = HttpStatus.OK;
-            message = "successfully followed";
+            message = "successful";
         }
         else {
             status = HttpStatus.BAD_REQUEST;
@@ -111,7 +111,7 @@ public class FriendshipController {
         }
         map.put("status", status.value());
         map.put("message", message);
-        map.put("followers", user.getFollowingsList());
+        map.put("followings", user.getFollowingsList());
 
 
         return new ResponseEntity<Object>(map,status);

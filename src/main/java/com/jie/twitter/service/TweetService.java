@@ -3,6 +3,8 @@ package com.jie.twitter.service;
 import com.jie.twitter.entity.User;
 import com.jie.twitter.dao.TweetDao;
 import com.jie.twitter.entity.Tweet;
+import com.jie.twitter.exception.IdNotFoundException;
+import com.jie.twitter.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,25 +19,34 @@ public class TweetService {
     @Autowired
     private NewsfeedService newsfeedService;
 
-    public Boolean createTweet(Tweet tweet){
-        Boolean result = false;
+    public void createTweet(Tweet tweet) throws Exception{
         User user = tweet.getUser();
         user.setEmail(user.getEmail().toLowerCase());
-        if (userService.validateUsername(user) && tweetDao.createTweet(tweet)){
-            result = true;
-            newsfeedService.fanoutToFollowers(tweet);
+        if (userService.validateUsername(user) == false){
+            throw new UserNotFoundException(user.getEmail());
         }
-        return result;
+        tweetDao.createTweet(tweet);
+        newsfeedService.fanoutToFollowers(tweet);
     }
 
-    public Boolean getTweets(User user){
+    public void getTweets(User user) throws Exception{
         user.setEmail(user.getEmail().toLowerCase());
-        Boolean result = false;
         if (userService.validateUsername(user)){
             System.out.println("userid validated for user:" + user.getEmail());
-            result = true;
             tweetDao.getTweets(user);
         }
-        return result;
+        else {
+            throw new UserNotFoundException(user.getEmail());
+        }
+    }
+
+    public Tweet getbyId(Integer id){
+        return tweetDao.getById(id);
+    }
+
+    public void validateTweetId(Tweet tweet) throws Exception{
+        if (tweetDao.getById(tweet.getId()) == null){
+            throw new IdNotFoundException(tweet.getId());
+        };
     }
 }
