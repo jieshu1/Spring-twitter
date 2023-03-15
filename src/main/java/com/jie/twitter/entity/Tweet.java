@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "tweets", indexes = @Index(name = "user_created_at",
         columnList = "user_id, created_at DESC", unique = true))
-public class Tweet {
+public class Tweet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +37,11 @@ public class Tweet {
 
     @JsonIgnore
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    List<Newsfeed> newsfeedList;
+    private List<Newsfeed> newsfeedsList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> commentsList;
 
     public Integer getId(){
         return id;
@@ -64,19 +69,27 @@ public class Tweet {
         this.createdAt = createdAt;
     }
 
-    public void setNewsfeedList(List<Newsfeed> newsfeedList) {
-        this.newsfeedList = newsfeedList;
+    public void setNewsfeedsList(List<Newsfeed> newsfeedsList) {
+        this.newsfeedsList = newsfeedsList;
     }
 
-    public List<Newsfeed> getNewsfeedList() {
-        if (newsfeedList == null) {
-            newsfeedList = new ArrayList<>();
+    public List<Newsfeed> getNewsfeedsList() {
+        if (newsfeedsList == null) {
+            newsfeedsList = new ArrayList<>();
         }
-        return newsfeedList;
+        return newsfeedsList;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<Comment> getCommentsList() {
+        return commentsList;
+    }
+
+    public void setCommentsList(List<Comment> commentsList) {
+        this.commentsList = commentsList;
     }
 
     @Override

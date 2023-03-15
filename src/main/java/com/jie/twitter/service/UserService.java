@@ -3,6 +3,7 @@ import com.jie.twitter.dao.UserDao;
 import com.jie.twitter.dao.UserSessionDao;
 import com.jie.twitter.entity.User;
 import com.jie.twitter.entity.UserSession;
+import com.jie.twitter.exception.UserNotFoundException;
 import com.jie.twitter.utils.EmailFormat;
 import com.jie.twitter.utils.Encrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserService {
         return userDao.getUser(email);
     }
 
-    public Boolean validateUser(User user) {
+    public Boolean validateUser(User user){
         EmailFormat.setEmailFormat(user);
         user.setPassword(Encrypt.passwordEncrypt(user.getPassword(), user.getEmail()));
         return userDao.validateUser(user);

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Map;
+
 @Controller
 public class SignUpController {
     @Autowired
@@ -17,7 +19,12 @@ public class SignUpController {
 
     @RequestMapping(value = "/twitter/signup", method = RequestMethod.POST)
     // @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<String> signUp(@RequestBody User user) {
+    public ResponseEntity<String> signUp(@RequestBody Map<String, String> params){
+        User user = new User();
+        user.setEmail(params.get("email"));
+        user.setPassword(params.get("password"));
+        user.setFirstName(params.get("firstName"));
+        user.setLastName(params.get("lastName"));
         if (user == null || user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad input");
         }

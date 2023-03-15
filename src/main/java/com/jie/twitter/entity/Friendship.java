@@ -5,6 +5,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -13,7 +14,7 @@ import java.util.Date;
         @Index(name = "from_user_created_at", columnList = "from_user, created_at DESC"),
         @Index(name = "to_user_created_at", columnList = "to_user, created_at DESC"),
 })
-public class Friendship {
+public class Friendship implements Serializable {
     @Id
     @Column(name = "id")
     @Basic(optional = false)

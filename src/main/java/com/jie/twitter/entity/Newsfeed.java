@@ -6,12 +6,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "newsfeeds", indexes = @Index(name = "user_created_at",
         columnList = "user_id, created_at DESC", unique = true))
-public class Newsfeed {
+public class Newsfeed implements Serializable {
     @Id
     @NotNull
     @Column(name = "id")
