@@ -2,7 +2,6 @@ package com.jie.twitter.dao;
 
 import com.jie.twitter.entity.Comment;
 import com.jie.twitter.entity.Tweet;
-import com.jie.twitter.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
