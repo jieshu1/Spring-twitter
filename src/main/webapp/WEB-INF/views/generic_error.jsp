@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<h2>Unknown Error Occured, please contact support.</h2>
+<h2>Unknown Error Occurred, please contact support.</h2>
 
 </body>
 </html>

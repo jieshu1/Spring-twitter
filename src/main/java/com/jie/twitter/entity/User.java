@@ -18,7 +18,12 @@ public class User implements Serializable {
     private static final long serialVersionUID = 2652327633296064143L;
 
     @Id
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private UserProfile userProfile;
 
     private String firstName;
 
@@ -31,6 +36,7 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private UserSession userSession;
+
 
     @JsonIgnore
     @CreationTimestamp
@@ -181,6 +187,13 @@ public class User implements Serializable {
         this.userSession = userSession;
     }
 
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 
     @Override
     public String toString() {
