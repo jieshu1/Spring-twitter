@@ -5,6 +5,8 @@ import com.jie.twitter.entity.UserSession;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -16,20 +18,23 @@ public class UserSessionDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public UserSession getUserSession(User user) {
+    @Cacheable(value = "memCache", key = "'usersession:'.concat(#email)")
+    public UserSession getUserSession(String email) {
+        System.out.println("get user session through database");
         UserSession userSession = null;
+        System.out.println("get user session through database");
         try (Session session = sessionFactory.openSession()) {
-            String hql = "from UserSession userSession where userSession.user=:user";
+            String hql = "from UserSession userSession where userSession.user.email=:email";
             Query theQuery = session.createQuery(hql);
-            theQuery.setParameter("user", user);
+            theQuery.setParameter("email", email);
             List<UserSession> results = theQuery.getResultList();
             if (results.size() > 0){
                 userSession = results.get(0);
-                System.out.println("UserSession found trough userID:" + userSession.getUser() +
+                System.out.println("UserSession found through userID:" + userSession.getUser() +
                         ", Session ID:" + userSession.getId());;
             }
             else {
-                System.out.println("UserSession not found trough userID");
+                System.out.println("UserSession not found through userID");
             }
             return userSession;
 
@@ -67,6 +72,7 @@ public class UserSessionDao {
         }
         return userSession;
     }
+    @CacheEvict(value = "memCache", key = "'usersession:'.concat(#userSession.getUser().getEmail())")
     public void update(UserSession userSession){
         System.out.println("about to update userSession:" + userSession.getId() + ", isActive:" + userSession.getIsActive());
         Session session = null;

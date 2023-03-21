@@ -6,6 +6,8 @@ import com.jie.twitter.entity.UserProfile;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -49,7 +51,8 @@ public class UserProfileDao {
         } catch (Exception ex) {
             ex.printStackTrace();
             session.getTransaction().rollback();
-            throw new SQLException("SQL Exception for updating User Profile: " + userProfile.toString());
+            throw new SQLException("SQL Exception for updating" +
+                    " User Profile: " + userProfile.toString());
         } finally {
             if (session != null){
                 session.close();
