@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -27,6 +28,7 @@ import java.util.*;
 @Configuration
 @EnableKafka
 @EnableWebMvc
+@EnableCaching
 //@PropertySource(value = {"classpath:kafka.properties"})
 public class ApplicationConfig implements WebMvcConfigurer{
 

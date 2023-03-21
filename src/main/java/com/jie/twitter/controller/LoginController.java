@@ -3,6 +3,7 @@ package com.jie.twitter.controller;
 import com.jie.twitter.entity.User;
 import com.jie.twitter.entity.UserSession;
 import com.jie.twitter.service.UserService;
+import com.jie.twitter.utils.EmailFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class LoginController {
         User user = new User();
         user.setEmail(params.get("email"));
         user.setPassword(params.get("password"));
+        EmailFormat.setEmailFormat(user);
         System.out.println(user.getEmail() + user.getPassword());
         if (user == null || user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad input");
@@ -36,7 +38,7 @@ public class LoginController {
         UserSession userSession;
         if (userService.validateUser(user)){
             status = HttpStatus.CREATED;
-            userSession = userService.login(user);
+            userSession = userService.login(user.getEmail());
             message = "Successfully logged in";
         }
         else {

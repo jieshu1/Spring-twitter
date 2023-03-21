@@ -9,6 +9,9 @@ import com.jie.twitter.exception.UserNotFoundException;
 import com.jie.twitter.utils.EmailFormat;
 import com.jie.twitter.utils.Encrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -25,7 +28,8 @@ public class UserService {
     @Autowired
     private UserProfileDao userProfileDao;
 
-    public void signUp(User user)
+    @CachePut(value = "memCache", key = "'user:'.concat(#user.getEmail())")
+    public User signUp(User user)
     {
         EmailFormat.setEmailFormat(user);
         user.setEnabled(true);
@@ -33,15 +37,18 @@ public class UserService {
         System.out.println("signup service, password encrypted:" + user.getPassword() +
                 "for user:" + user.getEmail());
         userDao.signUp(user);
+        return user;
     }
-
+    @Cacheable(value = "memCache", key = "'user:'.concat(#email)")
     public User getUser(String email) {
+        System.out.println("get user through database");
         return userDao.getUser(email);
     }
 
-    public UserProfile getUserProfile(UserProfile userProfile) {
-        EmailFormat.setEmailFormat(userProfile);
-        UserProfile result = userProfileDao.getByEmail(userProfile.getEmail());
+    @Cacheable(value = "memCache", key = "'userprofile:'.concat(#email)")
+    public UserProfile getUserProfile(String email) {
+        System.out.println("get user profile through database");
+        UserProfile result = userProfileDao.getByEmail(email);
         return result;
     }
 
@@ -64,10 +71,10 @@ public class UserService {
             throw new UserNotFoundException(email);
         }
     }
-
-    public UserSession login(User user){
-        EmailFormat.setEmailFormat(user);
-        UserSession userSession = userSessionDao.getUserSession(user);
+    public UserSession login(String email){
+        User user = new User();
+        user.setEmail(email);
+        UserSession userSession = userSessionDao.getUserSession(email);
         if (userSession == null){
             System.out.println("userService: userSession was not found, about to creat new session");
             userSession = new UserSession();
@@ -95,21 +102,15 @@ public class UserService {
         return user;
     }
 
+    @CacheEvict(value = "memCache", key = "'userprofile:'.concat(#userProfile.getEmail())")
     public void updateUserProfile(UserProfile userProfile) throws Exception {
-        EmailFormat.setEmailFormat(userProfile);
         User user = new User();
         user.setEmail(userProfile.getEmail());
         userProfile.setUser(user);
         if (userDao.validateUserName(userProfile.getEmail()) == false){
             throw new UserNotFoundException(userProfile.getEmail());
         }
-        UserProfile oldUserProfile = userProfileDao.getByEmail(userProfile.getEmail());
-        if(userProfile.getAvatar() == null) {
-            userProfile.setAvatar(oldUserProfile.getAvatar());
-        }
-        if(userProfile.getNickname() == null) {
-            userProfile.setNickname(oldUserProfile.getNickname());
-        }
+        UserProfile oldUserProfile = getUserProfile(userProfile.getEmail());
         if (oldUserProfile == null){
             userProfileDao.create(userProfile);
         }

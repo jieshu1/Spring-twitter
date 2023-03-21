@@ -37,7 +37,8 @@ public class UserProfileController {
     List<HttpMessageConverter<?>> converters;
 
     @RequestMapping(value = "twitter/userprofile/", method = RequestMethod.POST)
-    public ResponseEntity update(@RequestBody UserProfile userProfile) throws Exception{
+    public ResponseEntity update(@RequestBody UserProfile userProfile) throws Exception{        EmailFormat.setEmailFormat(userProfile);
+        EmailFormat.setEmailFormat(userProfile);
         String email = userProfile.getEmail();
         if (email == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("input data not right ");
@@ -60,7 +61,7 @@ public class UserProfileController {
         userService.validateEmail(email);
         HttpStatus status = HttpStatus.NOT_FOUND;
         HttpHeaders httpHeaders = new HttpHeaders();
-        userProfile = userService.getUserProfile(userProfile);
+        userProfile = userService.getUserProfile(email);
         String path = userProfile.getAvatar();
         System.out.println("Avatar path:" + path);
         ModelAndView result = new ModelAndView("user_profile");
