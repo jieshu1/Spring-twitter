@@ -4,6 +4,7 @@ import com.jie.twitter.entity.User;
 import com.jie.twitter.service.TweetService;
 import com.jie.twitter.service.UserService;
 import com.jie.twitter.entity.Tweet;
+import com.jie.twitter.utils.EmailFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,7 @@ public class TweetController {
     public ResponseEntity getTweet(@RequestParam("email") String email) throws Exception{
         User user = new User();
         user.setEmail(email);
+        EmailFormat.setEmailFormat(user);
         System.out.println("request received to view tweets for user:" + email);
         Map<String, Object> map = new HashMap<String, Object>();
         HttpStatus status;

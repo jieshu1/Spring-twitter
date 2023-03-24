@@ -6,7 +6,10 @@ import com.jie.twitter.entity.Tweet;
 import com.jie.twitter.exception.IdNotFoundException;
 import com.jie.twitter.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TweetService {
@@ -29,8 +32,7 @@ public class TweetService {
         newsfeedService.fanoutToFollowers(tweet);
     }
 
-    public void getTweets(User user) throws Exception{
-        user.setEmail(user.getEmail().toLowerCase());
+    public List<Tweet> getTweets(User user) throws Exception{
         if (userService.validateUsername(user)){
             System.out.println("userid validated for user:" + user.getEmail());
             tweetDao.getTweets(user);
@@ -38,9 +40,11 @@ public class TweetService {
         else {
             throw new UserNotFoundException(user.getEmail());
         }
+        return user.getTweetsList();
     }
-
-    public Tweet getbyId(Integer id){
+    public Tweet getbyId(Integer id)
+    {
+        System.out.println("get tweet by id from database");
         return tweetDao.getById(id);
     }
 
