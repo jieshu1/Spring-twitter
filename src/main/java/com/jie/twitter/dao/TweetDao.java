@@ -6,6 +6,10 @@ import com.jie.twitter.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -18,7 +22,7 @@ public class TweetDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
+    @CacheEvict(value = "redisCache", cacheManager = "redisCacheManager",key = "'tweets:'.concat(#tweet.getUser().getEmail())")
     public void createTweet(Tweet tweet) throws Exception{
         Session session = null;
         try{
@@ -37,8 +41,9 @@ public class TweetDao {
             }
         }
     }
-
-    public void getTweets(User user) throws Exception{
+    @Cacheable(value = "redisCache", cacheManager = "redisCacheManager",key = "'tweets:'.concat(#user.getEmail())")
+    public List<Tweet> getTweets(User user) throws Exception{
+        System.out.println("get tweets from database");
         List<Tweet> tweetsList = new ArrayList<Tweet>();
         try (Session session = sessionFactory.openSession()) {
             String hql = "from Tweet tweet where tweet.user=:user";
@@ -59,8 +64,9 @@ public class TweetDao {
             ex.printStackTrace();
             throw new SQLException("SQL Exception to get tweets from user:" + user.getEmail());
         }
+        return user.getTweetsList();
     }
-
+    @Cacheable(value = "memCache", cacheManager = "cacheManager", key = "'tweetid:'.concat(#id.toString())")
     public Tweet getById(Integer id) {
         Tweet tweet = null;
         try (Session session = sessionFactory.openSession()) {
